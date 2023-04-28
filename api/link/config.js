@@ -1,1 +1,9 @@
-ECHO 处于打开状态。
+let config = {
+    host: 'localhost',
+    user: 'root',
+    password: 'admin',
+    database: 'afterlifedb',
+    timezone: "SYSTEM"
+}
+
+module.exports = config;

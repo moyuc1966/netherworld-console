@@ -1,1 +1,10 @@
-ECHO 处于打开状态。
+const express = require('express');
+const app = express();
+
+//鐧诲綍鎺ュ彛
+app.use('/api', require('./api/login.js'));
+
+
+
+module.exports = app;
+
