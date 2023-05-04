@@ -47,14 +47,14 @@ CREATE TABLE `lifebook` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(32) NOT NULL,
     `uuid` varchar(32) NOT NULL, -- 唯一标识
-    `year` int(11) NOT NULL comment '生辰八字',
+    `year` varchar(24) NOT NULL comment '生辰八字',
     `status` int(11) NOT NULL comment '状态，0表示未出生，1在世，2在地府生活，3轮回中，4受刑中',
     `birthday` datetime NOT NULL comment '出生日期',
     `deathday` datetime NOT NULL comment '死亡日期',
     `gender` int(11) NOT NULL comment '性别，0表示男，1表示女',
     `birthplace` varchar(500) NOT NULL,   -- 出生地址
     `deathplace` varchar(500) NOT NULL,    -- 死亡地址
-    `photo` varchar(255),    -- 照片
+    `photo` varchar(255) default '/public/def/photo.jpeg',    -- 照片
     `money` int(11) NOT NULL default 0,    -- 命中财的数量
     `yinmoney` int(11) NOT NULL default 0,    -- 死后阴财的数量
     `child` int(11) NOT NULL default 0,    -- 命中子的数量
@@ -65,7 +65,7 @@ CREATE TABLE `lifebook` (
     `event` text(2000) NOT NULL comment '人生大事描述',    -- 人生大事
     `attribute` text(2000) NOT NULL comment '人物属性描述',    -- 属性
     `description` text(2000) NOT NULL comment '人生描述',    -- 人生描述
-    `character` text(2000) NOT NULL comment '人物描述',
+    `characterinfo` text(2000) NOT NULL comment '人物描述',
     `yin` int(11) NOT NULL default 0,    -- 阴德
     `yang` int(11) NOT NULL default 0,    -- 阳德
     `reward` text(2000) NOT NULL comment '奖赏情况',
