@@ -28,6 +28,10 @@ CREATE TABLE `role` (
 -- 初始化默认数据，时间为当前时间
 INSERT INTO `role` (`id`, `name`, `description`, `module`, `create_time`, `update_time`) 
 VALUES (1, '最高管理员', '拥有所有权限', 'all', NOW(), NOW());
+INSERT INTO `role` (`id`, `name`, `description`, `module`, `create_time`, `update_time`) 
+VALUES (2, '勾魂使者', '拥有勾魂相关权限', 'all', NOW(), NOW());
+INSERT INTO `role` (`id`, `name`, `description`, `module`, `create_time`, `update_time`) 
+VALUES (3, '审判长', '拥有审判相关权限', 'all', NOW(), NOW());
 
 -- 创建功能模块表
 CREATE TABLE `module` (
@@ -71,6 +75,10 @@ CREATE TABLE `lifebook` (
     `reward` text(2000) NOT NULL comment '奖赏情况',
     `afterlife` text(2000) NOT NULL comment '死后情况',
     `reincarnation` text(2000) NOT NULL comment '轮回情况',     -- 轮回情况
+    `reaperid` int(11) ,          -- 勾魂操作者id
+    `judgeid` int(11) ,             -- 审判操作者id
+    `punishmentid` int(11) ,    -- 受刑id
+    `reincarnationid` int(11) ,    -- 轮回盘id
     `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 );
@@ -95,6 +103,7 @@ CREATE TABLE `judgement` (
     `uuid` varchar(32) NOT NULL, -- 唯一标识
     `lifebook_id` int(11) NOT NULL comment '生死簿id',
     `reaper_id` int(11) NOT NULL comment '勾魂使者id',
+    `judge_id` int(11) NOT NULL comment '审判长id',
     `title` varchar(255) NOT NULL comment '标题',
     `record` text(3000) NOT NULL comment '记录',
     `create_time` datetime NOT NULL,

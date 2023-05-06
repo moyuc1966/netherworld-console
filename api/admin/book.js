@@ -245,7 +245,7 @@ const uploadFun = (req, res, next) => {
     let storage = multer.diskStorage({
         //指定保存位置
         destination: (req, file, cb) => {
-            cb(null, path.join(__dirname, '/public/photo'))
+            cb(null, path.join(__dirname, '../public/photo'))
         },
         //指定保存文件名
         filename: (req, file, cb) => {
