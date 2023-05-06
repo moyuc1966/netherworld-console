@@ -75,6 +75,7 @@ CREATE TABLE `lifebook` (
     `reward` text(2000) NOT NULL comment '奖赏情况',
     `afterlife` text(2000) NOT NULL comment '死后情况',
     `reincarnation` text(2000) NOT NULL comment '轮回情况',     -- 轮回情况
+    `punishment` text(1000) comment '受刑情况',
     `reaperid` int(11) ,          -- 勾魂操作者id
     `judgeid` int(11) ,             -- 审判操作者id
     `punishmentid` int(11) ,    -- 受刑id

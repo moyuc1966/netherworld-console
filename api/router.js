@@ -13,5 +13,8 @@ app.use('/admin', require('./admin/enchant.js'));
 //阎王殿审判部分接口
 app.use('/admin', require('./admin/trial.js'));
 
+//十八层地狱相关接口
+app.use('/admin', require('./admin/hell.js'));
+
 module.exports = app;
 
