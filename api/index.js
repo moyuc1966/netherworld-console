@@ -29,6 +29,8 @@ app.use((err, req, res, next) => {
         //数据库错误
     } else if (err.name == 'DatabaseError') {
         res.send({ code: err.status, msg: err.message })
+    } else if (err.name == 'ECONNREFUSED') {
+        res.send({ code: 504, msg: '数据库链接失败' })
         //其他错误
     } else {
         console.log('----ERROR: ' + err.message);

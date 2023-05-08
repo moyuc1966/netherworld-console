@@ -81,7 +81,10 @@ CREATE TABLE `lifebook` (
     `punishmentid` int(11) ,    -- 受刑id
     `reincarnationid` int(11) ,    -- 轮回盘id
     `create_time` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`),
+  UNIQUE KEY `id` (`id`)
+
 );
 
 -- 勾魂使者表
@@ -138,7 +141,7 @@ CREATE TABLE `reincarnationlog` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `aid` varchar(32) NOT NULL, -- 使用者id
     `uid` varchar(32) NOT NULL, -- 被使用者id
-    `type` int(11) NOT NULL comment '结果',
+    `type` varchar(32) NOT NULL comment '结果',
     `reason` text(2000) NOT NULL,    -- 轮回理由
     `create_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -161,9 +164,10 @@ CREATE TABLE `setting` (
     `key` varchar(32) NOT NULL, -- 键
     `value` varchar(32) NOT NULL, -- 值,0表示关闭，1表示开启
     `create_time` datetime NOT NULL,
+    `remark` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 );
 
 -- 初始化系统设置
-INSERT INTO `setting` (`key`, `value`, `create_time`) VALUES ('remittance', '1', NOW()); -- 开启汇款
-INSERT INTO `setting` (`key`, `value`, `create_time`) VALUES ('woodenfish', '1', NOW()); -- 开启敲木鱼加阳德
+INSERT INTO `setting` (`key`, `value`, `create_time`,`remark`) VALUES ('remittance', '1', NOW(),'汇款开关'); -- 开启汇款
+INSERT INTO `setting` (`key`, `value`, `create_time`,`remark`) VALUES ('woodenfish', '1', NOW(),'敲木鱼加功德开关'); -- 开启敲木鱼加阳德

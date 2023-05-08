@@ -117,7 +117,7 @@ router.post('/hellrecordadd', (req, res) => {
     let sql1 = `select name from helldevice where id=${device}`;
     db.query(sql1, (err, result) => {
         if (err) return sqlerr(res, err);
-        let sql = `update lifebook set status=4,punishment='在${floor}层地狱受${result[0].name}处刑，共${time}' where id=${uid}`;
+        let sql = `update lifebook set status=4,afterlife='判处${floor}地狱受刑${time}',punishment='在${floor}层地狱受${result[0].name}处刑，共${time}' where id=${uid}`;
         db.query(sql, (err, result) => {
             if (err) return sqlerr(res, err);
             // 添加使用记录
