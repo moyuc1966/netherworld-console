@@ -29,9 +29,11 @@ CREATE TABLE `role` (
 INSERT INTO `role` (`id`, `name`, `description`, `module`, `create_time`, `update_time`) 
 VALUES (1, '最高管理员', '拥有所有权限', 'all', NOW(), NOW());
 INSERT INTO `role` (`id`, `name`, `description`, `module`, `create_time`, `update_time`) 
-VALUES (2, '勾魂使者', '拥有勾魂相关权限', 'all', NOW(), NOW());
+VALUES (2, '勾魂使者', '拥有勾魂相关权限', '1,2,3,4,5,6,7,8,9,11,13,15,17,27,29', NOW(), NOW());
 INSERT INTO `role` (`id`, `name`, `description`, `module`, `create_time`, `update_time`) 
-VALUES (3, '审判长', '拥有审判相关权限', 'all', NOW(), NOW());
+VALUES (3, '审判长', '拥有审判相关权限', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,27,29', NOW(), NOW());
+INSERT INTO `role` (`id`, `name`, `description`, `module`, `create_time`, `update_time`) 
+VALUES (4, '管理员', '普通管理员', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,27,28,29', NOW(), NOW());
 
 -- 创建功能模块表
 CREATE TABLE `module` (
@@ -45,6 +47,78 @@ CREATE TABLE `module` (
   `update_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 );
+-- -- -- -- -- -- -- -- -- -- -- -- 初始化模块数据
+-- 生死簿模块
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (1, '生死簿', 'el-icon-s-order', '/lifebook', 1, 0, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (2, '数据管理', '', '/lifebook/data', 0, 1, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (3, '数据同步', '', '/lifebook/dataAdd', 0, 1, NOW(), NOW());
+-- 勾魂模块
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (4, '勾魂管理', 'el-icon-s-finance', '/reaper', 1, 0, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (5, '勾魂使者', '', '/reaper/reaper', 0, 4, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (6, '勾魂数据', '', '/reaper/enchantData', 0, 4, NOW(), NOW());
+-- 审判模块
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (7, '阎王殿审判', 'el-icon-video-camera-solid', '/trial', 1, 0, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (8, '十殿', '', '/trial/flowpath', 0, 7, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (9, '审判记录', '', '/trial/data', 0, 7, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (10, '数据同步', '', '/trial/add', 0, 7, NOW(), NOW());
+-- 十八层地狱模块
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (11, '十八层地狱', 'el-icon-s-goods', '/hell', 1, 0, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (12, '设备管理', '', '/hell/device', 0, 11, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (13, '作业流程', '', '/hell/flowpath', 0, 11, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (14, '地狱数据', '', '/hell/data', 0, 11, NOW(), NOW());
+-- 六道轮回模块
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (15, '六道轮回', 'el-icon-s-promotion', '/samsara', 1, 0, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (16, '轮回盘', '', '/samsara/selection', 0, 15, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (17, '轮回记录', '', '/samsara/data', 0, 15, NOW(), NOW());
+-- 冥币管理
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (18, '冥币管理', 'el-icon-s-check', '/money', 1, 0, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (19, '汇款', '', '/money/remittance', 0, 18, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (20, '汇款管理', '', '/money/admin', 0, 18, NOW(), NOW());
+-- 角色权限
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (21, '角色权限', 'el-icon-menu', '/role', 1, 0, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (22, '角色管理', '', '/role/role', 0, 21, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (23, '权限设置', '', '/role/authority', 0, 21, NOW(), NOW());
+-- 管理员
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (24, '管理员', 'el-icon-s-custom', '/admin', 1, 0, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (25, '管理员管理', '', '/admin/admin', 0, 24, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (26, '管理员添加', '', '/admin/add', 0, 24, NOW(), NOW());
+-- 系统设置
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (27, '系统设置', 'el-icon-s-tools', '/system', 1, 0, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (28, '系统设置', '', '/system/system', 0, 27, NOW(), NOW());
+INSERT INTO `module` (`id`, `name`, `icon`, `path`, `isparent`, `parentid`, `create_time`, `update_time`)
+VALUES (29, '信息修改', '', '/system/setInfo', 0, 27, NOW(), NOW());
+
+
+
+
 
 -- 创建生死簿表
 CREATE TABLE `lifebook` (

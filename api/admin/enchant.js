@@ -150,7 +150,7 @@ router.post('/addEnchanter', uploadFun, (req, res) => {
     gender = gender || 0;
     let role = 2
     let sql = `insert into reaper (name,uuid,gender,photo,description,create_time,role,status) values ('${name}','${uuid}',${gender},'${photo}',
-    '${description}',now(),${role},${status})`;
+    '${description}',now(),2,${status})`;
     db.query(sql, (err, data) => {
         if (err) {
             console.log(err);
@@ -251,6 +251,17 @@ router.put('/updateEnchanter', (req, res) => {
 router.delete('/deleteEnchanter', (req, res) => {
     let uuid = req.query.uuid;
     if (!isEmptyStr(uuid)) return tw(res, 400, 'uuid不能为空');
+    let querySql = `select * from reaper where uuid='${uuid}'`;
+    db.query(querySql, (err, data) => {
+        if (err) return tw(res, 400, '读取失败');
+        if (data[0].role == 4) {
+            //此勾魂使者是管理员的情况，修改管理员为4的普通管理员
+            let sql = `update user set role=4 where username = '${uuid}'`;
+            db.query(sql, (err, data) => {
+                if (err) return tw(res, 400, '初始化失败');
+            })
+        }
+    })
     let sql = `delete from reaper where uuid='${uuid}'`;
     db.query(sql, (err, data) => {
         if (err) {

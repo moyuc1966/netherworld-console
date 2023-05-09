@@ -30,5 +30,17 @@ app.use('/admin', require('./admin/remittance.js'));
 
 //用户发起汇款
 app.use('/api', require('./api/remittance.js'));
+
+//管理员管理
+app.use('/admin', require('./admin/user.js'));
+
+//用户无需token的一些小功能
+app.use('/api', require('./api/api.js'));
+
+//全局api
+app.use('/admin', require('./admin/statistics.js'));
+
+//角色权限相关接口
+app.use('/admin', require('./admin/role.js'));
 module.exports = app;
 
