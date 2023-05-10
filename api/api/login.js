@@ -47,6 +47,7 @@ router.post('/login', (req, res) => {
         res.send({
             'code': 200,
             'msg': '登录成功',
+            'adminName': result[0].nickname,
             'token': token
         })
     })
