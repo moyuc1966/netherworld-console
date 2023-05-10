@@ -29,5 +29,8 @@
     "less": "^4.1.3",
     "less-loader": "^11.1.0",
     "vue-template-compiler": "^2.6.14"
+  },
+  "vue": {
+    "productionSourceMap": false
   }
 }

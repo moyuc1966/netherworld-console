@@ -11,7 +11,8 @@ const routes = [
     {
         path: '/home', component: home, meta: { title: '地府管理系统' }, redirect: '/index', children: [
             { path: '/index', component: () => import('../components/homeIndex.vue'), meta: { title: '地府管理系统' } },
-
+            { path: '/lifebook/data', component: () => import('../components/lifebook/lifebookData.vue'), meta: { title: '生死簿-地府管理系统' } },
+            { path: '/lifebook/dataAdd', component: () => import('../components/lifebook/lifebookAdd.vue'), meta: { title: '数据同步-地府管理系统' } },
 
         ]
     },
