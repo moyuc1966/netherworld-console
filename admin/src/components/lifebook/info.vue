@@ -303,6 +303,8 @@ strong {
     border-top: 40px solid #e2e2e2;
     padding-left: 10px;
     box-sizing: border-box;
+    padding-bottom: 20px;
+    line-height: 27px;
 }
 
 .name {
@@ -341,6 +343,5 @@ strong {
 
 .human-info {
     text-align: left;
-    line-height: 1.5em;
 }
 </style>
