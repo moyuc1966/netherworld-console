@@ -22,7 +22,7 @@
             <div class="tools">
                 <p class="tools-title">常用功能导航</p>
                 <div class="toolsmain">
-                    <div class="tools-item">
+                    <div class="tools-item" @click="uigo('/lifebook/data')">
                         <img src="../../images/u200.png" alt="">
                         <span>生死簿</span>
                     </div>
@@ -46,11 +46,11 @@
                         <img src="../../images/u201.png" alt="">
                         <span>信息修改</span>
                     </div>
-                    <div class="tools-item">
+                    <div class="tools-item" @click="uigo('/lifebook/dataAdd')">
                         <img src="../../images/u200.png" alt="">
                         <span>生死同步</span>
                     </div>
-                    <div class="tools-item">
+                    <div class="tools-item" @click="filebookShow = true">
                         <img src="../../images/card.png" alt="">
                         <span>命书</span>
                     </div>
@@ -80,6 +80,32 @@
                 <div id="getPunishedCount" style="width: 100%; height: 300px;"></div>
             </div>
         </div>
+        <el-dialog title="请选择生死簿记录" :visible.sync="filebookShow" width="580px" style="text-align: left;">
+            <el-form label-width="50px">
+                <el-form-item label="uuid">
+                    <el-input placeholder="请输入uuid搜索" style="width:250px" v-model="filebookuuid"></el-input>
+                    <el-button type="primary" style="margin-left:22px;" @click="querySearchAsync">搜索</el-button>
+                </el-form-item>
+            </el-form>
+            <div class="filelist">
+                <div class="file-item" v-for="(item, index) in filebook" :key="index">
+                    <span class="name">{{ item.name }}</span>
+                    <span class="uuid">{{ item.uuid }}</span>
+                    <span class="info" @click="handleSelect(item)">查看命图</span>
+                </div>
+            </div>
+
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" plain @click="filebookShow = false">取 消</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog :visible.sync="dialogVisible" width="1379.2px" title="生死簿">
+            <img :src="imgurl" alt="" class="canvas">
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="drow()">下载</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -90,7 +116,13 @@ export default {
         return {
             statistics: {},
             getReincarnationCount: [],
-            getDeathCount: []
+            getDeathCount: [],
+            filebookShow: false,
+            filebookuuid: '',
+            filebook: [],
+            dialogVisible: false,
+            inner: '',
+            imgurl: '',
         }
     },
     created() {
@@ -211,7 +243,74 @@ export default {
                 this.$router.push('/login')
             }).catch(() => {
             });
-        }
+        },
+        uigo(path) {
+            this.$router.push(path)
+        },
+        handleSelect(item) {
+            let a = item
+            let inner = `${a.name}，身份号${a.uuid}，于${a.birthday}出生于${a.birthplace}，生辰八字为${a.year}，于${a.deathday}在${a.deathplace}因${a.reason}${a.type == 0 ? '自然死亡' : '意外死亡'}离世入府，计寿元${a.longevity}年。
+            命中带财${a.money}阴财${a.yinmoney}，所积阳德${a.yang}阴德${a.yin}，${a.marriage}，有${a.child}个子女。${a.event}。${a.description}，${a.name}${a.characterinfo}。死后${a.afterlife}，判得赏罚${a.reward}，
+            现在${a.status == 0 ? '还未出世。' : a.status == 1 ? '在世生活。' : a.status == 2 ? '魂归地府' : a.status == 3 ? '已进入轮回。' : '已打入地狱受刑。'}`
+            this.inner = inner
+            const loading = this.$loading({
+                lock: true,
+                text: '正在生成图片...',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            this.$http.post('/api/lifebook/export', {
+                inner: this.inner
+            }, { responseType: 'blob' }).then((response) => {
+                this.dialogVisible = true
+                loading.close();
+                const myBlob = new window.Blob([response.data], { type: 'image/png' })
+                console.log(myBlob)
+                const qrUrl = window.URL.createObjectURL(myBlob)
+                this.imgurl = qrUrl
+            }).catch((err) => {
+                console.log(err);
+                loading.close();
+                this.$message({
+                    type: 'error',
+                    message: '生成失败'
+                })
+            })
+        },
+        querySearchAsync() {
+            if (this.filebookuuid == '') return this.$message.error('请输入完整')
+            this.$http.get('admin/lifeBookSearch?uuid=' + this.filebookuuid).then(res => {
+                if (res.data.data.length > 0) {
+                    this.filebook = res.data.data
+                } else {
+                    this.$message.error('暂无数据')
+                }
+            })
+        },
+        drow() {
+            const loading = this.$loading({
+                lock: true,
+                text: '正在生成图片...',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            const imgElement = document.querySelector('.canvas');
+            const link = document.createElement('a');
+            link.download = this.filebookuuid + '.png';
+            fetch(imgElement.src)
+                .then((response) => response.blob())
+                .then((blob) => {
+                    const imageURL = URL.createObjectURL(blob);
+                    link.href = imageURL;
+                    link.click();
+                    loading.close();
+                    URL.revokeObjectURL(imageURL);
+                })
+                .catch((error) => {
+                    loading.close();
+                    console.error('Error:', error);
+                });
+        },
     }
 }
 </script>
@@ -220,6 +319,39 @@ export default {
 <style scoped lang="less">
 * {
     box-sizing: border-box;
+}
+
+.filelist {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+
+    .file-item {
+        border-bottom: 1px solid #e6e6e6;
+        display: flex;
+        align-items: center;
+        height: 56px;
+        width: calc(100% - 180px);
+        margin-left: 100px;
+        box-sizing: border-box;
+
+        .info {
+            color: #185ed1;
+            display: block;
+            margin-left: 62px;
+            cursor: pointer;
+        }
+
+        .uuid {
+            display: clock;
+        }
+
+        .name {
+            display: block;
+            width: 80px;
+            text-align: left;
+        }
+    }
 }
 
 .main {
@@ -303,6 +435,7 @@ export default {
                 min-height: 90px;
                 padding-top: 10px;
                 min-width: 90px;
+                cursor: pointer;
 
                 img {
                     width: 45px;

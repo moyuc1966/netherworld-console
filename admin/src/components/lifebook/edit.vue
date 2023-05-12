@@ -5,9 +5,10 @@
                 <el-input v-model="info.name" placeholder="请输入姓名"></el-input>
             </el-form-item>
             <el-form-item label="性别">
-                <el-select v-model="info.gender" placeholder="请选择性别">
-                    <el-option label="男" value="0"></el-option>
-                    <el-option label="女" value="1"></el-option>
+                <el-select v-model="info.gender" placeholder="请选择性别" value-key="value">
+                    <el-option :label="item.lable" :value="item.value"
+                        v-for="(item, index) in [{ value: 0, lable: '男' }, { value: 1, lable: '女' }]"
+                        :key="index"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="生辰八字">
@@ -33,8 +34,9 @@
             </el-form-item>
             <el-form-item label="死亡方式">
                 <el-select v-model="info.type" placeholder="请选择死亡方式">
-                    <el-option label="自然死亡" value="0"></el-option>
-                    <el-option label="意外死亡" value="1"></el-option>
+                    <el-option :label="item.lable" :value="item.value"
+                        v-for="(item, index) in [{ value: 0, lable: '自然死亡' }, { value: 1, lable: '意外死亡 ' }]"
+                        :key="index"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="死因">
@@ -99,10 +101,25 @@
             </el-form-item>
             <el-form-item style="width:100%;display: flex;justify-content: flex-end;margin-top: 52px; margin-bottom: 60px;">
                 <el-button type="primary" @click="clear" plain style="margin-right:15px;">清空</el-button>
-                <el-button type="primary" @click="onSubmit" :disabled="disabled">立即创建</el-button>
+                <el-button type="primary" @click="onSubmit" :disabled="disabled">提交修改</el-button>
             </el-form-item>
         </el-form>
         <div class="tall">
+            <el-form label-width="80px"
+                style="width:100%;background: #fff; border-bottom: 1px solid #e1e1e1;position: relative;">
+                <el-form-item label="人物照片">
+                    <el-upload style="margin-left:16px;" class="centerImg" :action="' '" list-type="picture-card"
+                        :file-list="fileList" :auto-upload="false" :limit="1" :on-change="complete" ref="uploadicon">
+                        <i class="el-icon-plus"></i>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onSubmitPhoto" style="margin-left:68px;">立即上传</el-button>
+                </el-form-item>
+                <el-button class="searchButton" size="primary" plain @click="back()">返回上一页</el-button>
+            </el-form>
+            <el-backtop target=".el-main" :visibility-height="50"></el-backtop>
+
             <p class="title">填写提示</p>
             <span class="info">1. 姓名填写标准姓名，不是小名，如无姓名者，可填写一生中别人称呼最多的名称，可以是叫最多的外号，外号只限于无姓名者</span>
             <span class="info">2. 生辰八字按四柱顺序填写八个字</span>
@@ -124,7 +141,7 @@
             <span class="indo">16. 审判奖赏，根据此人这一生的行为赏还是罚，例如奖下辈子富贵一生，罚鞭刑500后打入畜生道轮回，如：打入无间地狱...</span>
             <span class="info">17. 死后情况，此处不是填写葬礼怎么样，此处填写入府之后的情况，如：打入无间地狱....</span>
         </div>
-        <el-backtop target=".el-main" :visibility-height="50"></el-backtop>
+
     </div>
 </template>
 
@@ -160,7 +177,8 @@ export default {
                 attribute: '',
             },
             disabled: false,
-            imageUrl: ''
+            imageUrl: '',
+            fileList: []
         }
     },
     methods: {
@@ -187,6 +205,7 @@ export default {
         },
         onSubmit() {
             //遍历this.info检查是否有空属性
+            console.log(this.info);
             for (var key in this.info) {
                 if (key != 'photo' && key != 'status' && key != 'reincarnation' && this.info[key] === '') {
                     return this.$message.error('请填写完整信息');
@@ -200,15 +219,14 @@ export default {
             }
             const loading = this.$loading({
                 lock: true,
-                text: '正在添加...',
+                text: '正在修改...',
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)'
             });
-            this.$http.post('admin/lifeBookAdd', this.info).then(res => {
+            this.$http.put('admin/lifeBookUpdate', this.info).then(res => {
                 loading.close();
                 if (res.data.code == 200) {
-                    this.$message.success('添加成功');
-                    this.clear();
+                    this.$message.success('修改成功');
                 } else {
                     this.$message.error(res.data.msg);
                 }
@@ -235,7 +253,7 @@ export default {
                 marriage: '',
                 event: '',
                 description: '',
-                characterinfo: '',
+                character: '',
                 yin: '',
                 yang: '',
                 reward: '',
@@ -258,25 +276,72 @@ export default {
             second = minute < 10 ? ('0' + second) : second;
             return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
         },
-        handleAvatarSuccess(res, file) {
-            this.imageUrl = URL.createObjectURL(file.raw);
+        complete(file, fileList) {
+            const isJPG = file.raw.type === 'image/jpeg'
+            const isPNG = file.raw.type === 'image/png'
+            const isLt2M = file.raw.size / 1024 / 1024 < 5
+            this.hideUploadIcon = fileList.length >= 1;
+            if (!isPNG && !isJPG) {
+                this.$message.error('上传图片只能是 JPG/PNG 格式!')
+                return false
+            } else if (!isLt2M) {
+                this.$message.error('上传图片大小不能超过 5MB!')
+                return false
+            } else if (isLt2M && (isPNG || isJPG)) {
+                this.imageUrl = file.raw;//图片的url
+            }
         },
-        beforeAvatarUpload(file) {
-            const isJPG = (file.type === 'image/jpeg' || file.type === 'image/png');
-            const isLt2M = file.size / 1024 / 1024 < 3;
-
-            if (!isJPG) {
-                this.$message.error('上传头像图片只能是 JPG 格式!');
-            }
-            if (!isLt2M) {
-                this.$message.error('上传头像图片大小不能超过 3MB!');
-            }
-            return isJPG && isLt2M;
+        onSubmitPhoto() {
+            if (this.imageUrl === '') return this.$message.error('请上传图片');
+            const loading = this.$loading({
+                lock: true,
+                text: '正在上传...',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
+            let data = new FormData();
+            data.append('photo', this.imageUrl);
+            data.append('id', this.info.id);
+            this.$http.post('admin/lifeBookUpdateImg', data, {
+                "Content-Type": "multipart/form-data"
+            }).then(res => {
+                loading.close();
+                if (res.data.code == 200) {
+                    this.$message.success('修改成功');
+                } else {
+                    console.log(res.data);
+                    this.$message.error(res.data.msg);
+                }
+            })
+        },
+        removeSpaces(str) {
+            return str.replace(/\s+/g, '');
+        },
+        back() {
+            this.$router.go(-1)
         }
     },
     mounted() {
+        this.$http.get('admin/lifeBookSearch?uuid=' + this.$route.query.uuid).then(res => {
+            if (res.data.code == 200) {
+                this.info = res.data.data[0];
+                //去吃this.info.year中的全部空格
+                this.info.year = this.removeSpaces(this.info.year)
+                this.fileList.push({
+                    name: '照片',
+                    url: this.apiUrl + this.info.photo
+                })
 
-    }
+            } else {
+                this.$message.error(res.data.msg);
+            }
+        })
+    },
+    computed: {
+        genderText() {
+            return this.info.gender === '1' ? '女' : '男';
+        },
+    },
 }
 </script>
 
@@ -299,6 +364,12 @@ export default {
         width: 149px;
         height: 148px;
         border-radius: 6px;
+    }
+
+    .searchButton {
+        position: absolute;
+        top: 20px;
+        right: 20px;
     }
 
     .tall {

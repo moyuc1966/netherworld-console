@@ -24,7 +24,7 @@ function isEmptyStr(s) {
 router.post('/lifeBookAdd', (req, res) => {
     let { name, year, status, birthday, deathday, gender, birthplace,
         deathplace, photo, money, yinmoney, child, longevity, type, reason, marriage,
-        event, attribute, description, character, yin, yang, reward, afterlife, reincarnation } = req.body;
+        event, attribute, description, characterinfo, yin, yang, reward, afterlife, reincarnation } = req.body;
     // 初始化默认数据
     status = isEmptyStr(status) ? status : 0;
     yin = isEmptyStr(yin) ? yin : 0;
@@ -34,7 +34,7 @@ router.post('/lifeBookAdd', (req, res) => {
     reincarnation = isEmptyStr(reincarnation) ? reincarnation : '暂无';
     reward = isEmptyStr(reward) ? reward : '暂无';
     afterlife = isEmptyStr(afterlife) ? afterlife : '暂无';
-    character = isEmptyStr(character) ? character : '暂无';
+    characterinfo = isEmptyStr(characterinfo) ? characterinfo : '暂无';
     description = isEmptyStr(description) ? description : '暂无';
     attribute = isEmptyStr(attribute) ? attribute : '暂无';
     event = isEmptyStr(event) ? event : '暂无';
@@ -43,6 +43,7 @@ router.post('/lifeBookAdd', (req, res) => {
     type = isEmptyStr(type) ? type : 0;
     longevity = isEmptyStr(longevity) ? longevity : 60;
     child = isEmptyStr(child) ? child : 0;
+    photo = '/public/def/photo.jpeg'
 
     //参数是否合法
     if (!isEmptyStr(name) || !isEmptyStr(year) || !isEmptyStr(birthday) || !isEmptyStr(deathday) || !isEmptyStr(gender) || !isEmptyStr(birthplace) || !isEmptyStr(deathplace)) return tw(res, 400, '请输入完整')
@@ -158,8 +159,8 @@ router.get('/lifeBookSearch', (req, res) => {
         countSql += ` AND uuid = '${uuid}'`;
     }
     if (isEmptyStr(name)) {
-        sql += ` AND name = '${name}'`;
-        countSql += ` AND name = '${name}'`;
+        sql += ` AND name like '%${name}%'`;
+        countSql += ` AND name like '%${name}%'`;
     }
     if (isEmptyStr(birthday)) {
         sql += ` AND DATE(birthday) = '${birthday}'`;
@@ -312,6 +313,7 @@ const uploadFun = (req, res, next) => {
 // 修改照片
 router.post('/lifeBookUpdateImg', uploadFun, (req, res) => {
     let { id } = req.body;
+    let img = '/public/photo/' + req.filename
     if (!isEmptyStr(id)) return tw(res, 400, '请提交id')
     // 修改数据
     let query = `UPDATE lifebook SET photo = '${img}' WHERE id = ${id}`;
@@ -332,7 +334,7 @@ router.post('/lifeBookUpdateImg', uploadFun, (req, res) => {
 
 // 删除生死簿数据,支持多选
 router.delete('/lifeBookDelete', (req, res) => {
-    let { id } = req.body;
+    let { id } = req.query;
     if (!isEmptyStr(id)) return tw(res, 400, '请提交id')
     // 删除数据
     let query = `DELETE FROM lifebook WHERE id IN (${id})`;

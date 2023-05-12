@@ -71,7 +71,8 @@ export default {
             let hour = date.getHours()
             let minute = date.getMinutes()
             let second = date.getSeconds()
-            this.time = `${year}年${month}月${day}日 ${hour}:${minute}:${second}`
+
+            this.time = `${year}年${month < 10 ? '0' + month : month}月${day < 10 ? '0' + day : day}日 ${hour < 10 ? '0' + hour : hour}:${minute < 10 ? '0' + minute : minute}:${second < 10 ? "0" + second : second}`
         }, 1000)
 
     },

@@ -20,14 +20,14 @@ axios.interceptors.request.use(function (config) {
 //响应拦截器
 axios.interceptors.response.use(function (res) {
     if (res.data.code == 403) {
-        this.$message.error("请先登录");
-        this.$router.push('/login');
+        Vue.prototype.$message.error("暂无权限");
+        // this.$router.push('/login');
     } else {
         return res
     }
 }, function (err) {
-    this.$message.error("请先登录");
-    this.$router.push('/login');
+    Vue.prototype.$message.error("访问被拒绝");
+    console.log(err);
 })
 
 Vue.prototype.$http = axios;

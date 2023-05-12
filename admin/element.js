@@ -4,7 +4,7 @@ import {
     form, FormItem, Input, Message, Loading, Container, Header, Aside, Main,
     DropdownItem, DropdownMenu, Dropdown, Dialog, Menu, Submenu, MenuItem, Card, Table, TableColumn, Pagination,
     Tag, Image, Cascader, RadioGroup, RadioButton, DatePicker, Switch, TimePicker, MessageBox, Notification, Radio, Tooltip, Select, Option,
-    Upload
+    Upload, Backtop, Icon, Autocomplete
 
 } from 'element-ui'
 
@@ -43,6 +43,9 @@ Vue.use(TimePicker)
 Vue.use(Select)
 Vue.use(Option)
 Vue.use(Upload)
+Vue.use(Backtop)
+Vue.use(Icon)
+Vue.use(Autocomplete)
 Vue.prototype.$confirm = MessageBox.confirm;
 Vue.prototype.$prompt = MessageBox.prompt;
 Vue.prototype.$alert = MessageBox.alert;

@@ -13,7 +13,8 @@ const routes = [
             { path: '/index', component: () => import('../components/homeIndex.vue'), meta: { title: '地府管理系统' } },
             { path: '/lifebook/data', component: () => import('../components/lifebook/lifebookData.vue'), meta: { title: '生死簿-地府管理系统' } },
             { path: '/lifebook/dataAdd', component: () => import('../components/lifebook/lifebookAdd.vue'), meta: { title: '数据同步-地府管理系统' } },
-
+            { path: '/lifebook/info', component: () => import('../components/lifebook/info.vue'), meta: { title: '生死簿详情-地府管理系统' } },
+            { path: '/lifebook/edit', component: () => import('../components/lifebook/edit.vue'), meta: { title: '生死簿编辑-地府管理系统' } },
         ]
     },
     { path: '/404', component: () => import('../components/404.vue'), meta: { title: '404-页面走丢了-地府管理系统' } },

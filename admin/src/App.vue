@@ -11,22 +11,18 @@
 }
 
 ::-webkit-scrollbar {
-    /*滚动条整体样式*/
     width: 10px;
-    /*高宽分别对应横竖滚动条的尺寸*/
-    height: 1px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    /*滚动条里面小方块*/
     border-radius: 10px;
-    background: #cfcbcb;
+    background: #e0e0e0;
 }
 
 ::-webkit-scrollbar-track {
-    /*滚动条里面轨道*/
     border-radius: 10px;
-    background: #ededed;
+    background: #f1efef;
 }
 
 /* el-table 滚动条样式 */
@@ -36,12 +32,12 @@
 
 .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.1);
 }
 
 .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-track {
     border-radius: 10px;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.05);
 }
 
 .el-table__header-wrapper .has-gutter th:nth-last-child(2) {

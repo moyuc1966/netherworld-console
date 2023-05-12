@@ -16,6 +16,7 @@
     "jsonwebtoken": "^9.0.0",
     "md5": "^2.3.0",
     "multer": "^1.4.5-lts.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "puppeteer": "^20.1.2"
   }
 }
