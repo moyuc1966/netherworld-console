@@ -24,15 +24,18 @@ function sqlerr(res, err) {
 
 //审判某人接口
 router.post('/trial', (req, res) => {
-    let { lifebook_id, judge_id, title, record } = req.body;
-    if (!isEmptyStr(lifebook_id) || !isEmptyStr(judge_id) || !isEmptyStr(title) || !isEmptyStr(record)) return tw(res, 400, '请填写完整');
+    let { lifebook_id, title, record } = req.body;
+    if (!isEmptyStr(lifebook_id) || !isEmptyStr(title) || !isEmptyStr(record)) return tw(res, 400, '请填写完整');
     const uuid = 'TR' + getUuid(16, 16);
+    let judge_id = req.auth.id
     //查询审判长角色id
     const sql = `select id from role where name = '审判长'`;
     db.query(sql, (err, data) => {
-        if (err) return sqlerr(res, err)
-        if (data.length === 0) return tw(res, 400, '审判长角色不存在');
-        if (req.auth.role !== data[0].id) return tw(res, 400, '您不是审判长，无法审判')
+        if (req.auth.role != 1) {
+            if (err) return sqlerr(res, err)
+            if (data.length === 0) return tw(res, 400, '此权限不存在');
+            if (req.auth.role !== data[0].id) return tw(res, 400, '您不是审判长，无法审判')
+        }
 
         //查询该生命册是否存在
         const sql1 = `select id,reaperid from lifebook where id = '${lifebook_id}'`;
@@ -40,7 +43,8 @@ router.post('/trial', (req, res) => {
             if (err) return sqlerr(res, err)
             if (data.length === 0) return tw(res, 400, '该数据不存在');
             let reaper_id = data[0].reaperid;
-            if (reaper_id === null) return tw(res, 400, '该人员未在府中')
+            if (reaper_id == null) return tw(res, 400, '该人员未被勾魂')
+            if (data[0].status < 2) return tw(res, 400, '该人员未在府中')
 
             //查询该生命册是否已经被审判
             const sql2 = `select id from judgement where lifebook_id = '${lifebook_id}'`;
@@ -63,9 +67,18 @@ router.get('/getJudgementList', (req, res) => {
     let { page, limit, title } = req.query;
     page = page || 1;
     limit = limit || 10;
+    // Validate page and limit
+    if (page < 1 || limit < 1) {
+        return res.status(400).send({
+            'code': 400,
+            'msg': '页码错误'
+        });
+    }
     let sql = `select * from judgement where 1=1`;
     let sql2 = `select count(*) as count from judgement where 1=1`;
     if (isEmptyStr(title)) {
+        // Sanitize title
+        title = sqlstring.escape(title);
         sql += ` and title like '%${title}%'`;
         sql2 += ` and title like '%${title}%'`;
     }
@@ -82,7 +95,6 @@ router.get('/getJudgementList', (req, res) => {
             })
         })
     })
-
 })
 
 //修改审判结果
@@ -155,36 +167,33 @@ router.get('/getJudgementDetail', (req, res) => {
                     info: {}
                 }
                 //如果lifebook中的status为3，则在reincarnationlog根据uid字段查询出该人的转世信息
-                if (data3[0].status === 3) {
-                    let sql4 = `select * from reincarnationlog where uid = '${data3[0].id}'`;
-                    db.query(sql4, (err, data4) => {
-                        if (err) return sqlerr(res, err)
-                        senddata.info = data4[0];
-                        res.send({
-                            'code': 200,
-                            'msg': '获取成功',
-                            data: senddata
+                function handleSql4(status, callback) {
+                    if (status === 3) {
+                        let sql4 = `select * from reincarnationlog where uid = '${data3[0].id}'`;
+                        db.query(sql4, (err, data4) => {
+                            if (err) return sqlerr(res, err)
+                            callback(data4[0]);
                         })
-                    })
-                }
-                if (data3[0].status === 3) {
-                    let sql4 = `select * from helllog where uid = '${data3[0].id}'`;
-                    db.query(sql4, (err, data4) => {
-                        if (err) return sqlerr(res, err)
-                        senddata.info = data4[0];
-                        res.send({
-                            'code': 200,
-                            'msg': '获取成功',
-                            data: senddata
+                    } else if (status === 4) {
+                        let sql4 = `select * from helllog where uid = '${data3[0].id}'`;
+                        db.query(sql4, (err, data4) => {
+                            if (err) return sqlerr(res, err)
+                            callback(data4[0]);
                         })
-                    })
+                    } else {
+                        callback(null);
+                    }
                 }
-
-                res.send({
-                    'code': 200,
-                    'msg': '获取成功',
-                    data: senddata
-                })
+                handleSql4(data3[0].status, (data4) => {
+                    if (data4) {
+                        senddata.info = data4;
+                    }
+                    res.send({
+                        'code': 200,
+                        'msg': '获取成功',
+                        data: senddata
+                    })
+                });
             })
         })
 

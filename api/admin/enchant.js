@@ -20,12 +20,14 @@ function isEmptyStr(s) {
 
 //获取需要勾魂的数据
 router.get('/getEnchantData', (req, res) => {
-    let { page, limit } = req.query;
+    let { page, limit, name } = req.query;
     page = page || 1;
     limit = limit || 10;
+    let and = ''
+    if (isEmptyStr(name)) and = `and name like '%${name}%'`
     // 获取deathday在今天到今天加30天之内的数据
-    let sql = `select * from lifebook where deathday between curdate() and date_add(curdate(),interval 30 day) limit ${(page - 1) * limit},${limit}`;
-    let sql2 = `select count(*) as count from lifebook where deathday between curdate() and date_add(curdate(),interval 30 day)`;
+    let sql = `select * from lifebook where deathday between curdate() and date_add(curdate(),interval 30 day) and isnull(reaperid) ${and} limit ${(page - 1) * limit},${limit}`;
+    let sql2 = `select count(*) as count from lifebook where deathday between curdate() and date_add(curdate(),interval 30 day) and isnull(reaperid) ${and}`;
 
     db.query(sql, (err, data) => {
         if (err) {
@@ -275,31 +277,31 @@ router.delete('/deleteEnchanter', (req, res) => {
 
 //勾魂处理
 router.put('/handleEnchanter', (req, res) => {
-    let { id, set, repid } = req.body;
+    let { id, set } = req.body;
     if (!isEmptyStr(id)) return tw(res, 400, 'id不能为空');
-    if (!isEmptyStr(repid)) return tw(res, 400, '使者不能为空');
+    let repid = req.auth.id
     //检查是否有该勾魂使者
-    let sql = `select * from reaper where uuid=${req.username}`;
+    // let sql = `select * from reaper where id=${req.username}`;
+    // db.query(sql, (err, data) => {
+    //     if (err) {
+    //         console.log(err);
+    //         tw(res, 400, '无权操作');
+    //         return;
+    //     }
+    //将lifebook表中的status改为2
+    let time = formatDate(new Date());
+    let sql;
+    sql = `update lifebook set status=2,reaperid=${repid} where id=${id}`;
+    if (set == '1') sql = `update lifebook set status=2,deathday='${time}',reaperid=${repid} where id=${id}`;
     db.query(sql, (err, data) => {
         if (err) {
             console.log(err);
-            tw(res, 400, '无权操作');
+            tw(res, 400, '操作失败');
             return;
         }
-        //将lifebook表中的status改为2
-        let time = formatDate(new Date());
-        let sql;
-        sql = `update lifebook set status=2,reaperid=${repid} where id=${id}`;
-        if (set == '1') sql = `update lifebook set status=2,deathday='${time}',reaperid=${repid} where id=${id}`;
-        db.query(sql, (err, data) => {
-            if (err) {
-                console.log(err);
-                tw(res, 400, '操作失败');
-                return;
-            }
-            tw(res, 200, '操作成功');
-        })
+        tw(res, 200, '操作成功');
     })
+    // })
 
     //格式化时间，将时间戳转换为yyyy-mm-dd hh:mm:ss格式
     function formatDate(time) {

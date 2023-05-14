@@ -34,6 +34,14 @@ Vue.prototype.$http = axios;
 
 Vue.config.productionTip = false
 
+// 引入富文本组件
+import QuillEditor from 'vue-quill-editor'
+// 引入富文本组件样式
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+Vue.use(QuillEditor)
+
 new Vue({
     router,
     render: h => h(App)

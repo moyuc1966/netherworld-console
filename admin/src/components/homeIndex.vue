@@ -279,7 +279,8 @@ export default {
         },
         querySearchAsync() {
             if (this.filebookuuid == '') return this.$message.error('请输入完整')
-            this.$http.get('admin/lifeBookSearch?uuid=' + this.filebookuuid).then(res => {
+            let search = this.filebookuuid.toLocaleUpperCase()
+            this.$http.get('admin/lifeBookSearch?uuid=' + search).then(res => {
                 if (res.data.data.length > 0) {
                     this.filebook = res.data.data
                 } else {

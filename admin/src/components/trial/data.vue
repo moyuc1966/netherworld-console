@@ -3,7 +3,7 @@
         <el-card class="box-card">
             <div class="tableHead">
                 <el-input style="width: 300px" :maxlength="25" show-word-limit clear="searchInput" clearable
-                    placeholder="姓名搜索" prefix-icon="el-icon-search" v-model="search">
+                    placeholder="标题搜索" prefix-icon="el-icon-search" v-model="search">
                 </el-input>
                 <el-button class="searchButton" size="primary" plain @click="searchBind">搜索</el-button>
                 <el-button v-if="isyuan" class="yuan" size="primary" plain @click="yuan">原数据
@@ -12,82 +12,19 @@
             <!-- 表格 -->
             <el-table :row-style="{ height: '55px' }" id="out-table" :data="list" style="width: 100%;height: 700px;"
                 height="height" size="mini" :fit="true">
-                <el-table-column fixed prop="name" label="姓名" min-width="100" align="center" show-overflow-tooltip>
+                <el-table-column fixed prop="uuid" label="审判ID" width="200" align="center" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="photo" label="照片" min-width="60" align="center">
-                    <template slot-scope="scope">
-                        <el-image
-                            style="width: 40px;top:3px; height: 40px;border:1px solid #eee; padding:1px;border-radius: 3px;"
-                            :src="apiUrl + scope.row.photo" :preview-src-list="[apiUrl + list[scope.$index].photo]">
-                        </el-image>
-                    </template>
+                <el-table-column fixed prop="create_time" label="审判时间" width="150" align="left" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="uuid" label="身份号" min-width="160" align="center" show-overflow-tooltip>
-                    <template slot-scope="scope">
-                        <span class="uuid" style="color:#3799e9;" @click="copy(scope.row.uuid)">{{ scope.row.uuid
-                        }}</span>
-                    </template>
+                <el-table-column fixed prop="title" label="标题" width="180" align="left" show-overflow-tooltip>
                 </el-table-column>
-                <el-table-column prop="year" label="八字" min-width="150" align="center" show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column prop="birthday" label="出生日期" min-width="140" align="center" show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column prop="deathday" label="死亡日期" min-width="140" align="center" show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column prop="gender" label="性别" min-width="90" align="center" :sortable="true">
-                    <template slot-scope="scope">
-                        <el-tag style="height:25px; line-height:25px;"
-                            :type="scope.row.gender == '0' ? 'primary' : 'danger'" disable-transitions>{{
-                                scope.row.gender == '0' ? "男" : "女"
-                            }}
-                        </el-tag>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="money" label="命中财数" min-width="90" align="center" show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column prop="yinmoney" label="阴财" min-width="90" align="center" show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column prop="status" label="当前" min-width="100" align="center">
-                    <template slot-scope="scope">
-                        <el-tag style="height:25px; line-height:25px;"
-                            :type="scope.row.status == '0' ? 'warning' : scope.row.status == '1' ? 'success' : scope.row.status == '2' ? 'primary' : scope.row.status == '3' ? 'info' : 'danger'"
-                            disable-transitions>{{
-                                scope.row.status == '0' ? "未出生" : scope.row.status == '1' ? "在世" : scope.row.status == '2' ?
-                                    "在地府"
-                                    : scope.row.status == '3' ? "轮回中" : "受刑中"
-                            }}
-                        </el-tag>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="yang" label="阳德" min-width="90" align="center" show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column prop="yin" label="阴德" min-width="90" align="center" show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column prop="type" label="死亡类型" min-width="90" align="center">
-                    <template slot-scope="scope">
-                        <el-tag style="height:25px; line-height:25px;" :type="scope.row.type == '0' ? 'primary' : 'danger'"
-                            disable-transitions>{{
-                                scope.row.type == '0' ? "自然死亡" : "意外死亡"
-                            }}
-                        </el-tag>
-                    </template>
+                <el-table-column prop="record" label="记录内容" min-width="280" align="left" show-overflow-tooltip>
                 </el-table-column>
 
-                <el-table-column prop="child" label="后代数" min-width="90" align="center" :sortable="true"
-                    show-overflow-tooltip>
+                <el-table-column fixed="right" label="操作" width="100" align="center">
                     <template slot-scope="scope">
-                        {{ scope.row.child }}个
-                    </template>
-                </el-table-column>
-                <el-table-column prop="longevity" label="寿元" min-width="80" align="center" show-overflow-tooltip>
-                </el-table-column>
-                <el-table-column prop="reason" label="死因" min-width="100" align="center" show-overflow-tooltip>
-                </el-table-column>
-
-                <el-table-column fixed="right" label="操作" min-width="100" align="center">
-                    <template slot-scope="scope">
-                        <i class="el-icon-s-order" style="color:#1a7cff; font-size:20px; cursor:pointer;"
-                            @click="det(scope.row.uuid)"></i>
+                        <el-button type="primary" icon="el-icon-s-order" circle size="mini"
+                            @click="info(scope.row.uuid)"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -100,7 +37,6 @@
 </template>
 
 <script>
-
 export default {
     data() {
         return {
@@ -111,11 +47,14 @@ export default {
             height: 670,
             search: '',
             isyuan: false,
+            item: {},
+            cardShow: false,
+            editShow: false,
+            status: 0
         }
     },
     activated() {
-        console.log('我这个页面显示就会执行');
-        this.$http.get(`admin/lifeBookList?page=${this.currentPage}&limit=${this.pageSize}`).then(res => {
+        this.$http.get(`/admin/getEnchanterList?page=${this.currentPage}&limit=${this.pageSize}`).then(res => {
             if (res.data.code == 200) {
                 this.list = res.data.data
             } else {
@@ -125,11 +64,6 @@ export default {
 
     },
     methods: {
-        // 字段筛选
-        filterHandler(value, row, column) {
-            const property = column['property'];
-            return row[property] == value;
-        },
         copy(uuid) {
             //复制到剪切板
             navigator.clipboard.writeText(uuid);
@@ -142,10 +76,10 @@ export default {
         // 分页，页数改变时触发
         handleCurrentChange(val) {
             this.currentPage = val
-            this.$http.get(`admin/lifeBookList?page=${this.currentPage}&limit=${this.pageSize}`).then(res => {
+            this.$http.get(`admin/getJudgementList?page=${this.currentPage}&limit=${this.pageSize}`).then(res => {
                 if (res.data.code == 200) {
                     this.list = res.data.data
-                    this.count = res.data.total;
+                    this.count = res.data.count;
                 } else {
                     this.$message.error(res.data.msg)
                 }
@@ -154,7 +88,7 @@ export default {
         // 分页，每页条数改变时触发
         handleSizeChange(val) {
             this.pageSize = val
-            this.$http.get(`admin/lifeBookList?page=${this.currentPage}&limit=${this.pageSize}`).then(res => {
+            this.$http.get(`admin/getJudgementList?page=${this.currentPage}&limit=${this.pageSize}`).then(res => {
                 if (res.data.code == 200) {
                     this.list = res.data.data
                 } else {
@@ -170,11 +104,11 @@ export default {
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)',
             })
-            this.$http.get('admin/lifeBookList?page=1&limit=12').then(res => {
+            this.$http.get(`admin/getJudgementList?page=${this.currentPage}&limit=${this.pageSize}`).then(res => {
                 loading.close()
                 if (res.data.code == 200) {
                     this.list = res.data.data;
-                    this.count = res.data.total;
+                    this.count = res.data.count;
                     loading.close()
                 } else {
                     this.$message.error(res.data.msg)
@@ -183,13 +117,14 @@ export default {
         },
         // 搜索功能
         searchBind() {
+            if (this.search === '') return this.$message.error('请输入搜索内容')
             const loading = this.$loading({
                 lock: true,
                 text: 'Loading',
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)',
             })
-            this.$http.get(`admin/lifeBookSearch?name=${this.search}`).then(res => {
+            this.$http.get(`admin/getJudgementList?title=${this.search}`).then(res => {
                 console.log(res.data);
                 loading.close()
                 if (res.data.code == 200) {
@@ -211,7 +146,7 @@ export default {
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)',
             })
-            this.$http.get(`admin/lifeBookList?page=1&limit=15`).then(res => {
+            this.$http.get(`admin/getJudgementList?page=1&limit=15`).then(res => {
                 loading.close()
                 if (res.data.code == 200) {
                     this.list = res.data.data
@@ -224,10 +159,10 @@ export default {
 
         },
         // 操作，跳转
-        det(id) {
+        info(id) {
             localStorage.setItem('menu', '/lifebook/data')
             this.$router.push({
-                path: '/lifebook/info',
+                path: '/trial/info',
                 query: {
                     uuid: id
                 }
@@ -256,6 +191,15 @@ export default {
 .uuid:hover {
     //下划线
     color: #0d4fbb;
+}
+
+.tableHead {
+    width: 100%;
+
+    .addButton {
+        position: absolute;
+        right: 126px
+    }
 }
 
 .main {
@@ -302,6 +246,8 @@ export default {
             position: absolute;
             right: 10px
         }
+
+
     }
 
 
@@ -344,6 +290,68 @@ export default {
             display: flex;
             justify-content: flex-end;
             margin-right: 15px;
+        }
+    }
+
+    .card {
+        width: 450px;
+        padding: 20px;
+        background: #fff;
+        text-align: left;
+        position: relative;
+        min-height: 257px;
+        overflow: hidden;
+        border-radius: 5px;
+        overflow: hidden;
+        box-sizing: border-box;
+        background-image: url('../../../images/450.jpg');
+        background-repeat: no-repeat;
+        background-position: center;
+
+
+
+        .card-status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-family: '华文隶书 Bold', '华文隶书';
+        }
+
+        .card-head {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: left;
+
+            .el-image {
+                border-radius: 3px;
+            }
+
+            .card-info {
+                margin-left: 10px;
+
+                .card-name {
+                    color: #185ed1;
+                    font-weight: bold;
+                    font-size: 18px;
+                }
+
+                .card-uuid {
+                    display: block;
+                    margin-top: 5px;
+                    color: #aaa;
+                }
+            }
+        }
+
+        .card-dosc {
+            display: block;
+            line-height: 24px;
+            font-size: 14px;
+            margin-top: 16px;
+            // margin-left: 65px;
+            color: #979797;
         }
     }
 }

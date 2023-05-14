@@ -25,8 +25,9 @@ function sqlerr(res, err) {
 //添加轮回盘使用记录
 router.post('/reincarnationadd', (req, res) => {
     //添加记录，修改lifebook的status，修改reincarnationid，reincarnation
-    let { aid, uid, type, reason } = req.body;
-    if (!isEmptyStr(aid) || !isEmptyStr(uid) || !isEmptyStr(type) || !isEmptyStr(reason)) return tw(res, 400, '请填写完整');
+    let { uid, type, reason } = req.body;
+    if (!isEmptyStr(uid) || !isEmptyStr(type) || !isEmptyStr(reason)) return tw(res, 400, '请填写完整');
+    let aid = req.auth.id
     //添加数据
     let sql = `insert into reincarnationlog (aid,uid,type,reason,create_time) values ('${aid}','${uid}','${type}','${reason}',now())`;
     db.query(sql, (err, result) => {

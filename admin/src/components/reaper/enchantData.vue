@@ -84,10 +84,10 @@
                 <el-table-column prop="reason" label="死因" min-width="100" align="center" show-overflow-tooltip>
                 </el-table-column>
 
-                <el-table-column fixed="right" label="操作" min-width="100" align="center">
+                <el-table-column fixed="right" label="操作" min-width="190" align="center">
                     <template slot-scope="scope">
-                        <i class="el-icon-s-order" style="color:#1a7cff; font-size:20px; cursor:pointer;"
-                            @click="det(scope.row.uuid)"></i>
+                        <el-button type="primary" @click="det(scope.row.uuid)" size="mini">详情</el-button>
+                        <el-button type="danger" size="mini" @click="enchanter(scope.$index)">完成勾魂</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -96,6 +96,22 @@
                 :total="count">
             </el-pagination>
         </el-card>
+        <el-dialog style="text-align: left;" :visible.sync="show" width="550px"
+            :title="list.length > 0 ? '完成' + list[index].name + '的勾魂' : '勾魂'">
+            <el-form label-width="115px" style="text-align: left;">
+                <el-form-item label="是否提前勾魂">
+                    <el-select v-model="set" placeholder="是否提前勾魂" value-key="value">
+                        <el-option :label="item.lable" :value="item.value"
+                            v-for="(item, index) in [{ value: 0, lable: '否' }, { value: 1, lable: '提前勾魂' }]"
+                            :key="index"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="show = false">取 消</el-button>
+                <el-button type="primary" @click="update()">完成勾魂</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -111,11 +127,13 @@ export default {
             height: 670,
             search: '',
             isyuan: false,
+            show: false,
+            index: 0,
+            set: 0
         }
     },
     activated() {
-        console.log('我这个页面显示就会执行');
-        this.$http.get(`admin/lifeBookList?page=${this.currentPage}&limit=${this.pageSize}`).then(res => {
+        this.$http.get(`admin/getEnchantData?page=${this.currentPage}&limit=${this.pageSize}`).then(res => {
             if (res.data.code == 200) {
                 this.list = res.data.data
             } else {
@@ -138,11 +156,92 @@ export default {
                 message: '复制成功'
             })
         },
+        enchanter(index) {
+            this.index = index
+            let date = this.list[this.index].deathday
+            let todayDate = new Date().setHours(0, 0, 0, 0);
+            let paramsDate = new Date(date).setHours(0, 0, 0, 0);
+            let isToday = (todayDate === paramsDate);
+            if (!isToday) this.set = 1
+            this.show = true
+        },
+        update() {
+
+            if (this.set == 1) {
+                this.$prompt('是否确认提前勾魂，如已确认，请在下方输入 “ 提前勾魂 ”', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern: /提前勾魂/,
+                    inputErrorMessage: '请确认提前勾魂',
+                    dangerouslyUseHTMLString: true,
+                    inputPlaceholder: '请输入提前勾魂'
+                }).then(({ value }) => {
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)',
+                    })
+                    let data = {
+                        id: this.list[this.index].id,
+                        set: 1,
+                    }
+                    this.$http.put('admin/handleEnchanter', data).then(res => {
+                        loading.close()
+                        if (res.data.code == '200') {
+                            this.$message.success('勾魂完成')
+                            this.getInfo()
+                            this.show = false
+                        } else {
+                            this.$message.error(res.data.msg)
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消'
+                    });
+                });
+            } else {
+                this.$confirm('是否确认已完成勾魂', '提示', {
+                    confirmButtonText: '确认',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)',
+                    })
+                    let data = {
+                        id: this.list[this.index].id,
+                        set: 1,
+                    }
+                    this.$http.put('admin/handleEnchanter', data).then(res => {
+                        loading.close()
+                        if (res.data.code == '200') {
+                            this.$message.success('勾魂完成')
+                            this.getInfo()
+                            this.show = false
+                        } else {
+                            this.$message.error(res.data.msg)
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消'
+                    });
+                });
+
+            }
+        },
 
         // 分页，页数改变时触发
         handleCurrentChange(val) {
             this.currentPage = val
-            this.$http.get(`admin/lifeBookList?page=${this.currentPage}&limit=${this.pageSize}`).then(res => {
+            this.$http.get(`admin/getEnchantData?page=${this.currentPage}&limit=${this.pageSize}`).then(res => {
                 if (res.data.code == 200) {
                     this.list = res.data.data
                     this.count = res.data.total;
@@ -154,7 +253,7 @@ export default {
         // 分页，每页条数改变时触发
         handleSizeChange(val) {
             this.pageSize = val
-            this.$http.get(`admin/lifeBookList?page=${this.currentPage}&limit=${this.pageSize}`).then(res => {
+            this.$http.get(`admin/getEnchantData?page=${this.currentPage}&limit=${this.pageSize}`).then(res => {
                 if (res.data.code == 200) {
                     this.list = res.data.data
                 } else {
@@ -170,7 +269,7 @@ export default {
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)',
             })
-            this.$http.get('admin/lifeBookList?page=1&limit=12').then(res => {
+            this.$http.get('admin/getEnchantData?page=1&limit=12').then(res => {
                 loading.close()
                 if (res.data.code == 200) {
                     this.list = res.data.data;
@@ -189,7 +288,7 @@ export default {
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)',
             })
-            this.$http.get(`admin/lifeBookSearch?name=${this.search}`).then(res => {
+            this.$http.get(`admin/getEnchantData?name=${this.search}`).then(res => {
                 console.log(res.data);
                 loading.close()
                 if (res.data.code == 200) {
@@ -211,7 +310,7 @@ export default {
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)',
             })
-            this.$http.get(`admin/lifeBookList?page=1&limit=15`).then(res => {
+            this.$http.get(`admin/getEnchantData?page=1&limit=15`).then(res => {
                 loading.close()
                 if (res.data.code == 200) {
                     this.list = res.data.data
@@ -225,7 +324,6 @@ export default {
         },
         // 操作，跳转
         det(id) {
-            localStorage.setItem('menu', '/lifebook/data')
             this.$router.push({
                 path: '/lifebook/info',
                 query: {

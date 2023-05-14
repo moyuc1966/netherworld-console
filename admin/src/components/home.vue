@@ -2,7 +2,7 @@
     <el-container>
         <!-- 头部区域 -->
         <el-header>
-            <div class="title">地府管理</div>
+            <div class="title">地府管理中心</div>
             <span class="time">{{ time }}</span>
             <div class="back">
                 <img src="../../images/u43.png" />

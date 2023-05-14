@@ -1,6 +1,7 @@
 <template>
     <div class="main">
-        <el-form ref="form" label-width="80px">
+        <span class="edit-title">生死簿信息修改</span>
+        <el-form ref="form" label-width="80px" style="padding-top:80px;">
             <el-form-item label="姓名">
                 <el-input v-model="info.name" placeholder="请输入姓名"></el-input>
             </el-form-item>
@@ -13,6 +14,13 @@
             </el-form-item>
             <el-form-item label="生辰八字">
                 <el-input v-model="info.year" placeholder="请输入生辰八字" :show-word-limit="true" maxlength="8"></el-input>
+            </el-form-item>
+            <el-form-item label="当前状态">
+                <el-select v-model="info.status" placeholder="请选择当前状态" value-key="value">
+                    <el-option :label="item.lable" :value="item.value"
+                        v-for="(item, index) in [{ value: 0, lable: '未出生' }, { value: 1, lable: '在世' }, { value: 2, lable: '在地府' }, { value: 3, lable: '轮回中' }, { value: 4, lable: '受刑中' }]"
+                        :key="index"></el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="出生时间">
                 <el-date-picker @change="changeDateBirthday" v-model="info.birthday" type="datetime" placeholder="选择出生时间">
@@ -352,12 +360,27 @@ export default {
     background: #fff;
     display: flex;
     justify-content: flex-start;
+    position: relative;
+
+    .edit-title {
+        display: block;
+        font-size: 19px;
+        color: #185ed1;
+        position: absolute;
+        top: 20px;
+        left: 18px;
+        width: calc(50% - 60px);
+        text-align: left;
+        border-bottom: 1px solid #185ed1;
+        padding-bottom: 15px;
+    }
 
     .el-form {
         width: 50%;
         padding: 20px;
         box-sizing: border-box;
         text-align: left;
+        padding-top: 30px;
     }
 
     .photo {

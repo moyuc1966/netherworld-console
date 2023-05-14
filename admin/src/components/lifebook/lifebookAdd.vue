@@ -198,6 +198,17 @@ export default {
             if (this.info.birthday > this.info.deathday) {
                 return this.$message.error('出生日期不能大于死亡日期');
             }
+            //设置状态
+            if (new Date(this.info.birthday) > new Date()) this.info.status = 0
+            if (new Date(this.info.birthday) < new Date() && new Date(this.info.deathday) > new Date()) this.info.status = 1
+            if (new Date(this.info.deathday) < new Date()) {
+                //是轮回还是受刑
+                this.info.status = 2
+                if (this.info.afterlife.indexOf('轮回') > -1) this.info.status = 3
+                if (this.info.afterlife.indexOf('地狱') > -1 || this.info.afterlife.indexOf('地狱') > -1) this.info.status = 4
+            }
+
+
             const loading = this.$loading({
                 lock: true,
                 text: '正在添加...',
@@ -258,21 +269,6 @@ export default {
             second = minute < 10 ? ('0' + second) : second;
             return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
         },
-        handleAvatarSuccess(res, file) {
-            this.imageUrl = URL.createObjectURL(file.raw);
-        },
-        beforeAvatarUpload(file) {
-            const isJPG = (file.type === 'image/jpeg' || file.type === 'image/png');
-            const isLt2M = file.size / 1024 / 1024 < 3;
-
-            if (!isJPG) {
-                this.$message.error('上传头像图片只能是 JPG 格式!');
-            }
-            if (!isLt2M) {
-                this.$message.error('上传头像图片大小不能超过 3MB!');
-            }
-            return isJPG && isLt2M;
-        }
     },
     mounted() {
 

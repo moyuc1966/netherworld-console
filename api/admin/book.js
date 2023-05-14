@@ -57,7 +57,7 @@ router.post('/lifeBookAdd', (req, res) => {
         afterlife, reincarnation, create_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, NOW())`;
 
     const values = [name, uuid, year, status, birthday, deathday, gender, birthplace, deathplace, photo,
-        money, yinmoney, child, longevity, type, reason, marriage, event, attribute, description, character,
+        money, yinmoney, child, longevity, type, reason, marriage, event, attribute, description, characterinfo,
         yin, yang, reward, afterlife, reincarnation];
 
     // 指定长度和基数
