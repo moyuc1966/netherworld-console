@@ -13,7 +13,7 @@
                 </ul>
             </div>
             <div class="notfound-btn-container">
-                <p class="notfound-btn" @click="gohome">返回首页</p>
+                <p class="notfound-btn" @click="gohome">返回上一页</p>
             </div>
         </div>
     </div>
@@ -23,8 +23,7 @@
 export default {
     methods: {
         gohome() {
-            localStorage.setItem('menu', '')
-            this.$router.push('/');
+            this.$router.go(-1);
         }
     }
 }

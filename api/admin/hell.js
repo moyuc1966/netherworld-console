@@ -98,7 +98,7 @@ router.put('/hellstatus', (req, res) => {
 
 //删除设备
 router.delete('/helldel', (req, res) => {
-    let { id } = req.body;
+    let { id } = req.query;
     if (!isEmptyStr(id)) return tw(res, 400, '请选择要删除的设备');
     let sql = `delete from helldevice where id=${id}`;
     db.query(sql, (err, result) => {
@@ -190,14 +190,14 @@ router.put('/hellrecordedit', (req, res) => {
     let arr = [];
     if (isEmptyStr(floor)) arr.push(`floor=${floor}`);
     if (isEmptyStr(device)) arr.push(`device=${device}`);
-    if (isEmptyStr(time)) arr.push(`time=${time}`);
-    if (isEmptyStr(reason)) arr.push(`reason=${reason}`);
+    if (isEmptyStr(time)) arr.push(`time='${time}'`);
+    if (isEmptyStr(reason)) arr.push(`reason='${reason}'`);
     sql += arr.join(',') + ` where id=${id}`;
     //修改生死簿内受刑内容
-    let sql1 = `select uid,floor,time from helllog where id=${id}`;
+    let sql1 = `select uid,floor,time,device from helllog where id=${id}`;
     db.query(sql1, (err, result) => {
         if (err) return sqlerr(res, err);
-        let sql2 = `select name from helldevice where id=${device}`;
+        let sql2 = `select name from helldevice where id=${result[0].device}`;
         db.query(sql2, (err, result2) => {
             if (err) return sqlerr(res, err);
             floor = !isEmptyStr(floor) ? result[0].floor : floor;

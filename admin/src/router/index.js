@@ -22,6 +22,10 @@ const routes = [
             { path: '/trial/add', component: () => import('../components/trial/add.vue'), meta: { title: '审判-地府管理系统' } },
             { path: '/trial/data', component: () => import('../components/trial/data.vue'), meta: { title: '审判记录-地府管理系统' } },
             { path: '/trial/info', component: () => import('../components/trial/info.vue'), meta: { title: '审判记录详情-地府管理系统' } },
+            { path: '/hell/device', component: () => import('../components/hell/device.vue'), meta: { title: '地狱设备管理-地府管理系统' } },
+            { path: '/hell/flowpath', component: () => import('../components/hell/flowpath.vue'), meta: { title: '作业流程-地府管理系统' } },
+            { path: '/hell/data', component: () => import('../components/hell/data.vue'), meta: { title: '地狱数据-地府管理系统' } },
+            { path: '/hell/addHellLog', component: () => import('../components/hell/addHellLog.vue'), meta: { title: '添加受刑记录-地府管理系统' } },
         ]
     },
     { path: '/404', component: () => import('../components/404.vue'), meta: { title: '404-页面走丢了-地府管理系统' } },
