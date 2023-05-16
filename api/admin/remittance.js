@@ -23,13 +23,14 @@ function sqlerr(res, err) {
 
 //获取汇款列表
 router.get('/remittance', (req, res) => {
-    let { page, limit, relationship, uid } = req.query;
+    let { page, limit, relationship, uid, name } = req.query;
     page = page ? page : 1;
     limit = limit ? limit : 10;
     //返回汇款记录以及lifebook中的name和yinmoney
     let sql = `select remittance.*,lifebook.name,lifebook.yinmoney from remittance left join lifebook on remittance.uid=lifebook.uuid where 1=1`;
     if (relationship) sql += ` and remittance.relationship='${relationship}'`;
     if (uid) sql += ` and remittance.uid='${uid}'`;
+    if (name) sql += ` and lifebook.name like '%${name}%'`;
     sql += ` order by remittance.create_time desc limit ${(page - 1) * limit},${limit}`;
     db.query(sql, (err, result) => {
         if (err) return sqlerr(res, err);

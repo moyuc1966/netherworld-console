@@ -53,9 +53,6 @@
                 <el-button type="primary" style="margin-left: 20px;" @click="post">提交审判</el-button>
             </el-form-item>
         </el-form>
-
-
-
         <el-dialog title="请选择生死簿记录" :visible.sync="filebookShow" width="580px" style="text-align: left;">
             <el-form label-width="70px">
                 <el-form-item label="受审人">
@@ -74,6 +71,12 @@
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" plain @click="filebookShow = false">取 消</el-button>
             </span>
+        </el-dialog>
+        <!-- 弹窗弹出samsara/selection界面 -->
+        <el-dialog title="轮回盘" :visible.sync="lun_show" width="650px" style="text-align: left;">
+            <div style="width: 100%;height: 775px;">
+                <router-view name="default"></router-view>
+            </div>
         </el-dialog>
     </div>
 </template>
@@ -118,8 +121,14 @@ export default {
                 theme: 'snow',
                 placeholder: '请输入审判内容'
             },
-            yu_index: 0
+            yu_index: 0,
+            lun_show: false
         }
+    },
+    mounted() {
+
+        //设置name为lun的路由为samsara/selection
+        this.$router.push('/trial/add/samsara/selection', () => { }, () => { })
     },
     methods: {
         querySearchAsync() {
@@ -146,7 +155,7 @@ export default {
             this.info.lifebook_id = this.user.id
         },
         onSubmit_lun_show() {
-
+            this.lun_show = true
         },
         yuChange(e) {
             let map = { "铁钳地狱": 0, "剪刀地狱": 1, "铁树地狱": 2, "孽镜地狱": 3, "蒸笼地狱": 4, "铜柱地狱": 5, "刀山地狱": 6, "冰山地狱": 7, "油锅地狱": 8, "牛坑地狱": 9, "石压地狱": 10, "舂臼地狱": 11, "血池地狱": 12, "枉死牢地狱": 13, "磔刑地狱": 14, "火山地狱": 15, "石磨地狱": 16, "刀锯地狱": 17 }

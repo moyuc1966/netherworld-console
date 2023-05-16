@@ -58,7 +58,7 @@
                         <img src="../../images/pan.png" alt="">
                         <span>审判书</span>
                     </div>
-                    <div class="tools-item">
+                    <div class="tools-item" @click="sub_lun_show">
                         <img src="../../images/zhuan.png" alt="">
                         <span>轮回盘</span>
                     </div>
@@ -106,6 +106,11 @@
                 <el-button type="primary" @click="drow()">下载</el-button>
             </span>
         </el-dialog>
+        <el-dialog title="轮回盘" :visible.sync="lun_show" width="650px" style="text-align: left;">
+            <div style="width: 100%;height: 775px;">
+                <router-view name="default"></router-view>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -123,9 +128,13 @@ export default {
             dialogVisible: false,
             inner: '',
             imgurl: '',
+            lun_show: false
         }
     },
+
     created() {
+
+        this.$router.push('/index/samsara/selection', () => { }, () => { })
         this.$http.get('admin/statistics').then(res => {
             this.statistics = res.data.data
         })
@@ -243,6 +252,9 @@ export default {
                 this.$router.push('/login')
             }).catch(() => {
             });
+        },
+        sub_lun_show() {
+            this.lun_show = true
         },
         uigo(path) {
             this.$router.push(path)
