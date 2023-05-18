@@ -115,7 +115,8 @@
 </template>
 
 <script>
-import * as echarts from 'echarts';
+// import * as echarts from 'echarts';
+import echarts from '../../echarts.js';
 export default {
     data() {
         return {
@@ -173,7 +174,6 @@ export default {
             option && myChart.setOption(option);
         })
         this.$http.get('admin/getDeathCount').then(res => {
-            console.log(res);
             this.getReincarnationCount = res.data.data
             var myChart = echarts.init(document.getElementById('getDeathCount'));
             var option;
