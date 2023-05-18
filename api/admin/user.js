@@ -91,7 +91,7 @@ router.put('/admin/status', (req, res) => {
         tw(res, 400, '参数错误');
         return;
     }
-    if (req.auth.role !== 1) return tw(res, 403, '无权限');
+    if (req.auth.role != 1) return tw(res, 403, '无权限');
     if (req.auth.id == id) return tw(res, 403, '无法操作自己');
     // status只能取值0和1
     if (status != 0 && status != 1) return tw(res, 400, '参数错误');
@@ -228,7 +228,7 @@ router.delete('/admin/delete', (req, res) => {
         if (result[0].role == 1) return tw(res, 400, '无法删除超级管理员');
         if (result[0].role == 2) {
             //改管理员还是勾魂使者的情况
-            let sql = `delete from reaper where uuid = ${result[0].username}`;
+            let sql = `delete from reaper where uuid = '${result[0].username}'`;
             db.query(sql, (err, result) => {
                 if (err) return sqlerr(res, err);
             })

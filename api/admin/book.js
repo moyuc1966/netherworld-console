@@ -104,7 +104,6 @@ router.get('/lifeBookList', (req, res) => {
         query = `SELECT * FROM lifebook where uuid = '${uuid}'`;
     } else {
         query = `SELECT * FROM lifebook ORDER BY create_time DESC LIMIT ${start},${limit}`;
-        console.log('没有uuid');
     }
     db.query(query, (err, result) => {
         if (err) {

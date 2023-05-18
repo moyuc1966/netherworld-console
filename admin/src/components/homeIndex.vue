@@ -69,7 +69,7 @@
                 </div>
             </div>
             <div class="box-number">
-                <div id="getReincarnationCount" style="width: 100%; height: 350px;"></div>
+                <div id="getReincarnationCount" style="width: 528px; height: 350px;"></div>
             </div>
         </div>
         <div class="box">
@@ -173,6 +173,7 @@ export default {
             option && myChart.setOption(option);
         })
         this.$http.get('admin/getDeathCount').then(res => {
+            console.log(res);
             this.getReincarnationCount = res.data.data
             var myChart = echarts.init(document.getElementById('getDeathCount'));
             var option;

@@ -15,16 +15,11 @@ axios.interceptors.request.use(function (config) {
     config.headers.Authorization = localStorage.getItem('adminToken');
     return config
 }, function (err) {
-    this.$router.push('/login');
+    Vue.prototype.$router.push('/login');
 })
 //响应拦截器
 axios.interceptors.response.use(function (res) {
-    if (res.data.code == 403) {
-        Vue.prototype.$message.error("暂无权限");
-        // this.$router.push('/login');
-    } else {
-        return res
-    }
+    return res
 }, function (err) {
     Vue.prototype.$message.error("访问被拒绝");
     console.log(err);

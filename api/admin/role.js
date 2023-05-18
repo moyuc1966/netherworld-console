@@ -32,10 +32,52 @@ function formatDirectoryData(data) {
     return parentDirectories;
 }
 
+//手动获取权限列表
+router.get('/role/module', (req, res) => {
+    if (req.auth.id != 1) return tw(res, 400, '您没有权限')
+    if (!req.query.role) return tw(res, 400, '请选择角色')
+    let id = req.query.role
+    let querySql = `select module from role where id = ${id}`
+    db.query(querySql, (err, result) => {
+        if (err) return sqlerr(res, err)
+        let module = result[0].module
+        if (module == 'all') {
+            let sql = `select * from module`
+            db.query(sql, (err, result) => {
+                if (err) return sqlerr(res, err)
+                let sql = `select id from module`
+                db.query(sql, (err, result1) => {
+                    if (err) return sqlerr(res, err)
+                    let arr = []
+                    result1.forEach((item) => {
+                        arr.push(item.id)
+                    })
+                    res.send({
+                        'code': 200,
+                        'msg': '获取成功',
+                        'idList': arr.join(','),
+                        'data': formatDirectoryData(result)
+                    })
+                })
+            })
+        } else {
+            let sql = `select * from module where id in (${module})`
+            db.query(sql, (err, result) => {
+                if (err) return sqlerr(res, err)
+                res.send({
+                    'code': 200,
+                    'msg': '获取成功',
+                    'idList': module,
+                    'data': formatDirectoryData(result)
+                })
+            })
+        }
+    })
+})
 
 // 获取登录人权限列表
 router.get('/role', (req, res) => {
-    let id = req.auth.id
+    let id = req.auth.role
     let querySql = `select module from role where id = ${id}`
     db.query(querySql, (err, result) => {
         if (err) return sqlerr(res, err)
@@ -63,8 +105,6 @@ router.get('/role', (req, res) => {
         }
     })
 });
-
-
 
 
 
@@ -129,8 +169,8 @@ router.put('/role/edit', (req, res) => {
     if (!isEmptyStr(id)) return tw(res, 400, '请选择要修改的数据')
     if (!isEmptyStr(name) && !isEmptyStr(modules) && !isEmptyStr(description)) return tw(res, 400, '请选择修改内容')
     if (id == '1' || id == '2' || id == '3') return tw(res, 400, '此角色不能修改')
-    if (name == '最高管理员' || name == '勾魂使者' || name == '审判长' || name == '管理员') return tw(res, 400, '此角色不能修改')
-    if (id == 4 && isEmptyStr(name)) return tw(res, 400, '此角色不可修改角色名')
+    if ((name == '最高管理员' || name == '勾魂使者' || name == '审判长')) return tw(res, 400, '此名称不能重复')
+    if (id == 4 && isEmptyStr(name) && name != '管理员') return tw(res, 400, '此角色不可修改角色名')
     //查询角色名称是否存在
     let sql = `select * from role where name = '${name}' and id != ${id}`
     db.query(sql, (err, result) => {

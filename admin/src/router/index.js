@@ -39,6 +39,12 @@ const routes = [
             { path: '/samsara/addSamsaraLog', component: () => import('../components/samsara/add.vue'), meta: { title: '添加轮回记录-地府管理系统' } },
             { path: '/money/remittance', component: () => import('../components/money/remittance.vue'), meta: { title: '汇款-地府管理系统' } },
             { path: '/money/admin', component: () => import('../components/money/admin.vue'), meta: { title: '汇款管理-地府管理系统' } },
+            { path: '/system/system', component: () => import('../components/system/system.vue'), meta: { title: '系统设置-地府管理系统' } },
+            { path: '/system/setInfo', component: () => import('../components/system/setInfo.vue'), meta: { title: '信息修改-地府管理系统' } },
+            { path: '/admin/admin', component: () => import('../components/admin/admin.vue'), meta: { title: '管理员管理-地府管理系统' } },
+            { path: '/admin/add', component: () => import('../components/admin/add.vue'), meta: { title: '添加管理员-地府管理系统' } },
+            { path: '/role/role', component: () => import('../components/role/role.vue'), meta: { title: '角色管理-地府管理系统' } },
+            { path: '/role/authority', component: () => import('../components/role/authority.vue'), meta: { title: '权限设置-地府管理系统' } },
         ]
     },
     { path: '/404', component: () => import('../components/404.vue'), meta: { title: '404-页面走丢了-地府管理系统' } },

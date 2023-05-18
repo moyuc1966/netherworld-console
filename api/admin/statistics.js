@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../link/link.js');
-const md5 = require('../enc.js');
 
 const tw = (res, code, msg) => {
     res.send({

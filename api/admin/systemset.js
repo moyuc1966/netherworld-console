@@ -41,7 +41,7 @@ router.put('/systemset', (req, res) => {
     let key = req.body.key;
     let value = req.body.value;
     if (!isEmptyStr(key) || !isEmptyStr(value)) return tw(res, 400, '参数错误')
-    let sql = `update setting set \`value\`='${value}' where \`key\`='${key}'`;
+    let sql = `update setting set \`value\`='${value}',create_time='${formatDate(new Date())}' where \`key\`='${key}'`;
     db.query(sql, (err, result) => {
         if (err) return sqlerr(res, err);
         res.send({
@@ -49,6 +49,17 @@ router.put('/systemset', (req, res) => {
             'msg': '修改成功'
         })
     })
+
+    function formatDate(time) {
+        let date = new Date(time);
+        let year = date.getFullYear(),
+            month = date.getMonth() + 1,
+            day = date.getDate(),
+            hour = date.getHours(),
+            minute = date.getMinutes(),
+            second = date.getSeconds();
+        return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
+    }
 })
 
 //删除某个系统设置
