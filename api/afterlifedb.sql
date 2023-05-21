@@ -122,8 +122,6 @@ VALUES (29, '信息修改', '', '/system/setInfo', 0, 27, NOW(), NOW());
 
 
 
-
-
 -- 创建生死簿表
 CREATE TABLE `lifebook` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
