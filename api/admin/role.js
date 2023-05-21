@@ -168,7 +168,7 @@ router.put('/role/edit', (req, res) => {
     let { id, name, description, modules } = req.body;
     if (!isEmptyStr(id)) return tw(res, 400, '请选择要修改的数据')
     if (!isEmptyStr(name) && !isEmptyStr(modules) && !isEmptyStr(description)) return tw(res, 400, '请选择修改内容')
-    if (id == '1' || id == '2' || id == '3') return tw(res, 400, '此角色不能修改')
+    if (id == '1' || id == '2' || id == '3' || id == '5') return tw(res, 400, '此角色不能修改')
     if ((name == '最高管理员' || name == '勾魂使者' || name == '审判长')) return tw(res, 400, '此名称不能重复')
     if (id == 4 && isEmptyStr(name) && name != '管理员') return tw(res, 400, '此角色不可修改角色名')
     //查询角色名称是否存在
@@ -195,7 +195,7 @@ router.put('/role/edit', (req, res) => {
 router.delete('/role/del', (req, res) => {
     let { id } = req.query;
     if (!isEmptyStr(id)) return tw(res, 400, '请选择要删除的数据')
-    if (id == '1' || id == '2' || id == '3' || id == '4') return tw(res, 400, '此角色不能删除')
+    if (id == '1' || id == '2' || id == '3' || id == '4' || id == '5') return tw(res, 400, '此角色不能删除')
     if (req.auth.role != 1) return tw(res, 403, '权限不足')
     // user表中所有role字段是id的都改为4
     let sql = `update user set role = 4 where role = ${id}`

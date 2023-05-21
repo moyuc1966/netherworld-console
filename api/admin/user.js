@@ -87,6 +87,7 @@ router.get('/admin/list', (req, res) => {
 // 封禁解封管理员
 router.put('/admin/status', (req, res) => {
     let { id, status } = req.body;
+    if (id == 2) return tw(res, 403, '无法操作此账户');
     if (!isEmptyStr(id) || !isEmptyStr(status)) {
         tw(res, 400, '参数错误');
         return;
@@ -146,6 +147,7 @@ router.post('/admin/add', (req, res) => {
 //修改密码
 router.put('/admin/password', (req, res) => {
     let { newpass, oldpass } = req.body;
+    if (req.auth.id == 2) return tw(res, 403, '无法操作此账户');
     if (!isEmptyStr(newpass) || !isEmptyStr(oldpass)) return tw(res, 400, '参数错误');
     //newpass只能是数字，字母，下划线，长度在6-22位
     let reg = /^[a-zA-Z0-9_]{4,22}$/;
@@ -199,6 +201,7 @@ router.post('/admin/reset', (req, res) => {
 //修改昵称
 router.put('/admin/nickname', (req, res) => {
     let { nickname } = req.body;
+    if (req.auth.id == 2) return tw(res, 403, '无法操作此账户');
     if (!isEmptyStr(nickname)) return tw(res, 400, '参数错误');
     if (nickname.length > 25) return tw(res, 400, '昵称长度不能超过25个字符')
     // 修改昵称和update_time
@@ -222,6 +225,7 @@ router.delete('/admin/delete', (req, res) => {
     if (!isEmptyStr(id)) return tw(res, 400, '参数错误');
     if (req.auth.role !== 1) return tw(res, 403, '无权限');
     if (req.auth.id == id) return tw(res, 403, '无法操作自己');
+    if (req.auth.id == 2) return tw(res, 403, '无法操作此账户');
     let querySql = `select * from user where id = ${id}`;
     db.query(querySql, (err, result) => {
         if (err) return sqlerr(res, err);
@@ -251,6 +255,7 @@ router.delete('/admin/delete', (req, res) => {
 //将普通管理员设置为勾魂使者
 router.put('/admin/reaper', (req, res) => {
     let { id, gender, description } = req.body;
+    if (req.auth.id == 2) return tw(res, 403, '无法操作此账户');
     if (!isEmptyStr(id) || !isEmptyStr(gender) || !isEmptyStr(description)) return tw(res, 400, '参数错误');
     if (req.auth.role !== 1) return tw(res, 403, '无权限');
     if (id == 1) return tw(res, 400, '无法操作超级管理员');

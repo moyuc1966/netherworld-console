@@ -13,6 +13,8 @@ CREATE TABLE `user` (
 -- 初始化默认数据
 INSERT INTO `user` (`id`, `username`, `password`, `nickname`, `create_time`, `update_time`, `role`,`status`) 
 VALUES (1, 'admin', 'e50de14051afd6aacd8d1560f2f08579', '管理员', NOW(), NOW(), 1,0);
+INSERT INTO `user` (`id`, `username`, `password`, `nickname`, `create_time`, `update_time`, `role`,`status`) 
+VALUES (2, '000000', 'e50de14051afd6aacd8d1560f2f08579', '授权管理员', NOW(), NOW(), 5,0);
 
 -- 创建角色表
 CREATE TABLE `role` (
@@ -34,6 +36,8 @@ INSERT INTO `role` (`id`, `name`, `description`, `module`, `create_time`, `updat
 VALUES (3, '审判长', '拥有审判相关权限', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,27,29', NOW(), NOW());
 INSERT INTO `role` (`id`, `name`, `description`, `module`, `create_time`, `update_time`) 
 VALUES (4, '管理员', '普通管理员', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,27,28,29', NOW(), NOW());
+INSERT INTO `role` (`id`, `name`, `description`, `module`, `create_time`, `update_time`) 
+VALUES (5, '授权管理员', '负责前台获取授权的账号，不要删除', '1,2,3,7,8,11,13,15,16,27,29', NOW(), NOW());
 
 -- 创建功能模块表
 CREATE TABLE `module` (

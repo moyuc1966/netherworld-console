@@ -4,6 +4,8 @@ const db = require('../link/link.js');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
+const jwt = require('jsonwebtoken');
+const md5 = require('../enc.js');
 
 const tw = (res, code, msg) => {
     res.send({
@@ -136,6 +138,29 @@ router.post('/lifebook/export', async (req, res) => {
         console.error('导出图片时出错:', error);
         tw(res, 500, '导出图片时出错')
     }
+})
+
+//获取临时授权
+router.get('/user/gettempauth', (req, res) => {
+    let sql = `select * from user where id = 2`;
+    db.query(sql, (err, result) => {
+        if (err) {
+            sqlerr(res, err);
+            return;
+        }
+        let config = {
+            username: result[0].sername,
+            role: result[0].role,
+            id: result[0].id
+        }
+        const token = jwt.sign(config, 'moyc^_^', { expiresIn: '1d' })
+        res.send({
+            'code': 200,
+            'msg': '授权成功',
+            'token': token
+        })
+
+    })
 })
 
 

@@ -26,23 +26,23 @@
                         <img src="../../images/u200.png" alt="">
                         <span>生死簿</span>
                     </div>
-                    <div class="tools-item">
+                    <div class="tools-item" @click="andfunction('woodenFish')">
                         <img src="../../images/u185.png" alt="">
                         <span>加功德</span>
                     </div>
-                    <div class="tools-item">
+                    <div class="tools-item" @click="uigo('/money/remittance')">
                         <img src="../../images/u198.png" alt="">
                         <span>汇款</span>
                     </div>
-                    <div class="tools-item">
+                    <div class="tools-item" @click="uigo('/hell/flowpath')">
                         <img src="../../images/u201.png" alt="">
                         <span>作业流程</span>
                     </div>
-                    <div class="tools-item">
+                    <div class="tools-item" @click="uigo('/trial/flowpath')">
                         <img src="../../images/u199.png" alt="">
                         <span>十殿</span>
                     </div>
-                    <div class="tools-item">
+                    <div class="tools-item" @click="uigo('/system/setInfo')">
                         <img src="../../images/u201.png" alt="">
                         <span>信息修改</span>
                     </div>
@@ -54,7 +54,7 @@
                         <img src="../../images/card.png" alt="">
                         <span>命书</span>
                     </div>
-                    <div class="tools-item">
+                    <div class="tools-item" @click="uigo('/trial/data')">
                         <img src="../../images/pan.png" alt="">
                         <span>审判书</span>
                     </div>
@@ -253,6 +253,9 @@ export default {
                 this.$router.push('/login')
             }).catch(() => {
             });
+        },
+        andfunction(path) {
+            window.open(this.andfunctionUrl + '/' + path)
         },
         sub_lun_show() {
             this.lun_show = true
