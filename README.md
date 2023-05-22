@@ -57,7 +57,7 @@ Vue.prototype.adminUrl = 'http://localhost:8081' //后台管理系统地址
 
 axios.defaults.baseURL = 'http://localhost:3000/'; //api接口地址，注意末尾携带/
 ```
-如果是在本地运行，检查端口正确后默认就好，后台管理系统才是还为搭建，如果8081端口没有被占用，那么后台管理系统地址就是`http://localhost:8081`，如果8081端口被占用则运行在`http://localhost:8082`端口，依次类推
+如果是在本地运行，检查端口正确后默认就好，后台管理系统此时还未搭建，如果8081端口没有被占用，那么后台管理系统地址就是`http://localhost:8081`，如果8081端口被占用则运行在`http://localhost:8082`端口，依次类推
 检查某端口是否被占用，在cmd执行如下命令，如果返回内容为空则表示未被占用
 ```
 netstat -ano|findstr "8081"
@@ -71,7 +71,7 @@ npm i
 ```
 npm run serve
 ```
-如果是需要打包发布，按如下流程完成，否则请直接跳过此内容到[3. 管理后台搭建](#3.管理后台搭建运行)<br>
+如果是需要打包发布，按如下流程完成，否则请直接跳过此内容到[3. 管理后台搭建](#3管理后台搭建运行)<br>
 打包
 ```
 npm run build
@@ -111,4 +111,32 @@ app.listen(3010, () => console.log('Example app listening on port 3010!'))
 
 ## 3.管理后台搭建运行
 ### a.配置api接口地址
+打开`admin/src/main.js`文件，此处有三个地址需要填写
+```javascript
+Vue.prototype.apiUrl = 'http://localhost:3000' //api接口地址，不携带/
+
+Vue.prototype.adminUrl = 'http://localhost:8080' //user用户端搭建得到的地址
+
+axios.defaults.baseURL = 'http://localhost:3000/'; //api接口地址，注意末尾携带/
+```
+如果是在本地运行，检查端口正确后默认就好
+### b.运行项目
+启动项目，如果只是本地预览，执行如下命令直接运行即可，运行完毕后访问输出的`App running at:`中的地址即可
+```
+npm run serve
+```
+如果是需要打包发布，请参考上文中[打包运行流程](#b启动项目)<br><br>
+***后台管理默认账号密码是123456，admin***
+<br><br>至此项目搭建启动完成
+
+# 截图预览
+![管理后台首页](https://github.com/moyuc1966/netherworld-console/blob/main/images/admin-index.png "管理后台首页") 
+![生死簿数据管理](https://github.com/moyuc1966/netherworld-console/blob/main/images/admin-lifebook.png "生死簿数据管理") 
+![后台权限对比](https://github.com/moyuc1966/netherworld-console/blob/main/images/admin-role.png "后台权限对比") 
+![轮回转盘](https://github.com/moyuc1966/netherworld-console/blob/main/images/admin-samsara.png "轮回转盘") 
+![阎王殿审判](https://github.com/moyuc1966/netherworld-console/blob/main/images/admin-trial.png "阎王殿审判")
+![用户端首页](https://github.com/moyuc1966/netherworld-console/blob/main/images/user-index.png "用户端首页") 
+![生死簿导入](https://github.com/moyuc1966/netherworld-console/blob/main/images/user-lifebook.png "生死簿导入") 
+![敲木鱼加功德](https://github.com/moyuc1966/netherworld-console/blob/main/images/user-woodenfish.png "敲木鱼加功德") 
+
 
