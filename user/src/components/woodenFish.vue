@@ -60,6 +60,8 @@
 </template>
 
 <script>
+let autoPlayMusic;
+let autoAddNum
 export default {
     data() {
         return {
@@ -75,6 +77,7 @@ export default {
             isToken: false,
             filebookuuid: '',
             filebook: [],
+            auto: ''
 
         }
     },
@@ -196,8 +199,17 @@ export default {
             setTimeout(this.addNum, 500);
         },
         playMusic() {
-            let music = document.querySelector("#music");
-            music.play();
+            let audio = document.querySelector("#music");
+            if (audio) {
+                let play = audio.play();
+                if (play) {
+                    play.then(() => {
+                        console.log("Audio played");
+                    }).catch((error) => {
+                        console.log("Error playing audio:", error);
+                    });
+                }
+            }
         },
         autoPlay() {
             document.querySelector(".mubang").className = "mubang";
@@ -236,34 +248,46 @@ export default {
                 this.$http.post('/api/user/addmerit', {
                     "uniqueid": this.info.uuid
                 }).then(res => {
-                    console.log(res);
                     if (res.data.code != 200) {
                         this.tw(res.data.msg, 2000)
                     }
                 })
             }
 
+
             function showtips() {
                 let tips = document.querySelector("#tips");
-                tips.style.visibility = "visible";
-                tips.style.opacity = "1";
-                tips.style.top = "50px";
+                if (tips) {
+                    tips.style.visibility = "visible";
+                    tips.style.opacity = "1";
+                    tips.style.top = "50px";
+                }
             }
             function hiddenTips() {
                 let tips = document.querySelector("#tips");
-                tips.style.visibility = "hidden";
-                tips.style.opacity = "0";
-                tips.style.top = "100px";
+                if (tips) {
+                    tips.style.visibility = "hidden";
+                    tips.style.opacity = "0";
+                    tips.style.top = "100px";
+                }
             }
+        },
+        handleBeforeUnload(event) {
+            clearInterval(autoPlayMusic);
+            clearInterval(autoAddNum);
         },
 
     },
+    beforeUnmount() {
+        //移除handleBeforeUnload，防止内存泄漏
+        window.removeEventListener("popstate", this.handleBeforeUnload);
+    },
     mounted() {
-        var auto = document.querySelector("#auto");
-        let autoPlayMusic;
-        let autoAddNum
-        auto.addEventListener("change", () => {
-            if (auto.checked) {
+        this.auto = document.querySelector("#auto");
+        //返回页面时，清除定时器
+        window.addEventListener("popstate", this.handleBeforeUnload);
+        this.auto.addEventListener("change", () => {
+            if (this.auto.checked) {
                 this.autoPlay();
                 this.addNum();
                 setTimeout(() => {

@@ -15,7 +15,7 @@
                 </div>
                 <el-button class="searchButton" size="primary" plain @click="back()">返回上一页</el-button>
                 <el-button class="editButton" size="primary" plain @click="editShow()">修改</el-button>
-                <el-button class="exprotButton" size="primary" plain @click="exprotButton()">生死簿</el-button>
+                <el-button class="exprotButton" size="primary" plain @click="exprotButton()">生成生死簿</el-button>
                 <el-button class="delButton" size="danger" plain @click="delButton()">删除数据</el-button>
             </div>
             <div class="human-info-wrapper">
@@ -103,7 +103,7 @@ export default {
             this.inner = inner
             const loading = this.$loading({
                 lock: true,
-                text: '正在生成图片...',
+                text: '正在生成图片，一般10秒内完成...',
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)'
             });
@@ -293,7 +293,7 @@ strong {
 
 .delButton {
     position: absolute;
-    right: 360px;
+    right: 410px;
 }
 
 .human-info {
