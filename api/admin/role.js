@@ -37,30 +37,32 @@ router.get('/role/module', (req, res) => {
     if (req.auth.id != 1) return tw(res, 400, '您没有权限')
     if (!req.query.role) return tw(res, 400, '请选择角色')
     let id = req.query.role
-    let querySql = `select module from role where id = ${id}`
+    let querySql = `select module,name from role where id = ${id}`
+
     db.query(querySql, (err, result) => {
         if (err) return sqlerr(res, err)
         let module = result[0].module
+
         if (module == 'all') {
             let sql = `select * from module`
             db.query(sql, (err, result) => {
                 if (err) return sqlerr(res, err)
                 let sql = `select id from module`
-                db.query(sql, (err, result1) => {
-                    if (err) return sqlerr(res, err)
-                    let arr = []
-                    result1.forEach((item) => {
-                        arr.push(item.id)
-                    })
-                    res.send({
-                        'code': 200,
-                        'msg': '获取成功',
-                        'idList': arr.join(','),
-                        'data': formatDirectoryData(result)
-                    })
+
+
+                let arr = []
+                result.forEach((item) => {
+                    arr.push(item.id)
+                })
+                res.send({
+                    'code': 200,
+                    'msg': '获取成功',
+                    'idList': arr.join(','),
+                    'data': formatDirectoryData(result)
                 })
             })
         } else {
+            if (module.split(',').some(item => isNaN(Number(item.trim())))) return tw(res, 400, `${result[0].name}角色权限数据异常`)
             let sql = `select * from module where id in (${module})`
             db.query(sql, (err, result) => {
                 if (err) return sqlerr(res, err)
@@ -181,7 +183,7 @@ router.put('/role/edit', (req, res) => {
         let sql = `update role set `
         if (isEmptyStr(name)) arr.push(`name = '${name}'`)
         if (isEmptyStr(description)) arr.push(`description = '${description}'`)
-        if (isEmptyStr(modules)) arr.push(`module = '${modules}'`)
+        if (isEmptyStr(modules) && !modules.split(',').some(item => isNaN(Number(item.trim())))) arr.push(`module = '${modules}'`)
         sql += arr.join(',') + ` where id = ${id}`
         db.query(sql, (err, result) => {
             if (err) return sqlerr(res, err)
